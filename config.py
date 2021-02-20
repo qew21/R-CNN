@@ -20,7 +20,7 @@ T_batch_size =64
 T_decay_iter=100
 T_learning_rate=0.0001
 T_decay_rate=0.99
-T_weights_file =r'./output/train_alexnet/save.ckpt-40000'
+T_weights_file =r'./output/train_alexnet/save.ckpt-20000'
 
 F_class_num = 3
 F_batch_size = 256
@@ -30,11 +30,11 @@ F_decay_rate=0.99
 F_fineturn_threshold =0.3
 F_svm_threshold =0.3
 F_regression_threshold =0.6
-F_weights_file =r'./output/fineturn/save.ckpt-54000'
+F_weights_file =r'./output/fineturn/save.ckpt-20000'
 
 R_class_num = 5
 R_batch_size = 512
 R_decay_iter=5000
 R_learning_rate=0.0001
 R_decay_rate=0.5
-R_weights_file =r'./output/Reg_box/save.ckpt-10000'
+R_weights_file =r'./output/Reg_box/save.ckpt-20000'

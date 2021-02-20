@@ -5,8 +5,7 @@ Rich feature hierarchies for accurate object detection and semantic segmentation
 这个程序是基于tensorflow实现RCNN功能。  
 
 # 开发环境  
-windows10 + python3.5 + tensorflow1.2 + tflearn + cv2 + scikit-learn   
-i5-7500 + GTX 1070Ti   
+windows10 + python3.8 + tensorflow2.4 + tflearn + cv2 + scikit-learn 
 
 # 数据集
 采用17flowers据集, 官网下载：http://www.robots.ox.ac.uk/~vgg/data/flowers/17/  

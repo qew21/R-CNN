@@ -338,7 +338,7 @@ class FineTun_And_Predict_Data(object):
                 SVM_data = []
                 data_list = os.listdir(os.path.join(data_set, data_dir))
                 for ind, d in enumerate(data_list):
-                    i, l, k = np.load(os.path.join(data_set, data_dir,d))
+                    i, l, k = np.load(os.path.join(data_set, data_dir,d), allow_pickle=True)
                     for index in range(len(i)):
                         SVM_data.append([i[index], l[index]])
                         self.Reg_data.append([i[index], k[index]])
@@ -350,7 +350,7 @@ class FineTun_And_Predict_Data(object):
             data_set = self.fineturn_save_path
             data_list = os.listdir(data_set)
             for ind, d in enumerate(data_list):
-                i, l = np.load(os.path.join(data_set, d))
+                i, l = np.load(os.path.join(data_set, d), allow_pickle=True)
                 for index in range(len(i)):
                     self.fineturn_data.append([i[index], l[index]])
                 view_bar("Load fineturn data of %s" % d, ind + 1, len(data_list))
@@ -394,7 +394,6 @@ class FineTun_And_Predict_Data(object):
                 self.epoch += 1
                 np.random.shuffle(self.Reg_data)
         return images,labels
-
 
 
 

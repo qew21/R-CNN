@@ -4,9 +4,10 @@ import Networks
 import numpy as np
 import process_data
 import config as cfg
-import tensorflow as tf
-from sklearn.externals import joblib
-slim = tf.contrib.slim
+import joblib
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+import tf_slim as slim
 flower = {1:'pancy', 2:'Tulip'}
 class Solver :
     '''
@@ -183,54 +184,55 @@ if __name__ =='__main__':
     
     Features_solver, svms, Reg_box_solver =get_Solvers()
 
-    img_path = './2flowers/jpg/0/image_0561.jpg'  # or './17flowers/jpg/16/****.jpg'
-    imgs, verts = process_data.image_proposal(img_path)
-    process_data.show_rect(img_path, verts, ' ')
-    features = Features_solver.predict(imgs)
-    print(np.shape(features))
+    for img_path in ['./2flowers/jpg/0/image_0561.jpg', './2flowers/jpg/0/image_0562.jpg',
+                     './2flowers/jpg/1/image_1286.jpg', './2flowers/jpg/1/image_1282.jpg']:
+        imgs, verts = process_data.image_proposal(img_path)
+        process_data.show_rect(img_path, verts, ' ')
+        features = Features_solver.predict(imgs)
+        print(np.shape(features))
 
-    results = []
-    results_old = []
-    results_label = []
-    count = 0
-    for f in features:
-        for svm in svms:
-            pred = svm.predict([f.tolist()])
-            # not background
-            if pred[0] != 0:
-                results_old.append(verts[count])
-                #print(Reg_box_solver.predict([f.tolist()]))
-                if Reg_box_solver.predict([f.tolist()])[0][0] > 0.5:
-                    px, py, pw, ph = verts[count][0], verts[count][1], verts[count][2], verts[count][3]
-                    old_center_x, old_center_y = px + pw / 2.0, py + ph / 2.0
-                    x_ping, y_ping, w_suo, h_suo = Reg_box_solver.predict([f.tolist()])[0][1], \
-                                                   Reg_box_solver.predict([f.tolist()])[0][2], \
-                                                   Reg_box_solver.predict([f.tolist()])[0][3], \
-                                                   Reg_box_solver.predict([f.tolist()])[0][4]
-                    new__center_x = x_ping * pw + old_center_x
-                    new__center_y = y_ping * ph + old_center_y
-                    new_w = pw * np.exp(w_suo)
-                    new_h = ph * np.exp(h_suo)
-                    new_verts = [new__center_x, new__center_y, new_w, new_h]
-                    results.append(new_verts)
-                    results_label.append(pred[0])
-        count += 1
+        results = []
+        results_old = []
+        results_label = []
+        count = 0
+        for f in features:
+            for svm in svms:
+                pred = svm.predict([f.tolist()])
+                # not background
+                if pred[0] != 0:
+                    results_old.append(verts[count])
+                    #print(Reg_box_solver.predict([f.tolist()]))
+                    if Reg_box_solver.predict([f.tolist()])[0][0] > 0.5:
+                        px, py, pw, ph = verts[count][0], verts[count][1], verts[count][2], verts[count][3]
+                        old_center_x, old_center_y = px + pw / 2.0, py + ph / 2.0
+                        x_ping, y_ping, w_suo, h_suo = Reg_box_solver.predict([f.tolist()])[0][1], \
+                                                       Reg_box_solver.predict([f.tolist()])[0][2], \
+                                                       Reg_box_solver.predict([f.tolist()])[0][3], \
+                                                       Reg_box_solver.predict([f.tolist()])[0][4]
+                        new__center_x = x_ping * pw + old_center_x
+                        new__center_y = y_ping * ph + old_center_y
+                        new_w = pw * np.exp(w_suo)
+                        new_h = ph * np.exp(h_suo)
+                        new_verts = [new__center_x, new__center_y, new_w, new_h]
+                        results.append(new_verts)
+                        results_label.append(pred[0])
+            count += 1
 
-    average_center_x, average_center_y, average_w,average_h = 0, 0, 0, 0
-    #给预测出的所有的预测框区一个平均值，代表其预测出的最终位置
-    for vert in results:
-        average_center_x += vert[0]
-        average_center_y += vert[1]
-        average_w += vert[2]
-        average_h += vert[3]
-    average_center_x = average_center_x / len(results)
-    average_center_y = average_center_y / len(results)
-    average_w = average_w / len(results)
-    average_h = average_h / len(results)
-    average_result = [[average_center_x, average_center_y, average_w, average_h]]
-    result_label = max(results_label, key=results_label.count)
-    process_data.show_rect(img_path, results_old,' ')
-    process_data.show_rect(img_path, average_result,flower[result_label])
+        average_center_x, average_center_y, average_w,average_h = 0, 0, 0, 0
+        #给预测出的所有的预测框区一个平均值，代表其预测出的最终位置
+        for vert in results:
+            average_center_x += vert[0]
+            average_center_y += vert[1]
+            average_w += vert[2]
+            average_h += vert[3]
+        average_center_x = average_center_x / len(results)
+        average_center_y = average_center_y / len(results)
+        average_w = average_w / len(results)
+        average_h = average_h / len(results)
+        average_result = [[average_center_x, average_center_y, average_w, average_h]]
+        result_label = max(results_label, key=results_label.count)
+        process_data.show_rect(img_path, results_old,' ')
+        process_data.show_rect(img_path, average_result,flower[result_label])
 
 
 

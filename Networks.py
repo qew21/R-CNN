@@ -1,12 +1,12 @@
 import os
 import config as cfg
 from sklearn import svm
-import tensorflow as tf
-from sklearn.externals import joblib
 from tensorflow.python.ops import nn_ops
 from tflearn.layers.normalization import local_response_normalization
-
-slim = tf.contrib.slim
+import joblib
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+import tf_slim as slim
 
 class Alexnet_Net :
     '''
@@ -129,7 +129,6 @@ class Reg_Net(object):
         def op(inputs):
             return tf.tanh(inputs)
         return op
-
 
 
 
